@@ -1,4 +1,6 @@
 var socket, sketch;
+var b; // Board
+var squares = []; // Individual squares (2D array)
 
 sketch = function(p){
 	var canvas;
@@ -135,8 +137,6 @@ sketch = function(p){
 		};
 
 		window.addEventListener("place", (e) => {
-			console.log(e.detail.state);
-			console.log(e.detail.xIndex, e.detail.yIndex);
 			var x = e.detail.xIndex;
 			var y = e.detail.yIndex;
 			var state = e.detail.state;
@@ -351,8 +351,6 @@ sketch = function(p){
 	};
 
 	// p5 Stuff
-	var b;
-	var squares = [];
 	p.preload = function(){
 
 	};
@@ -413,10 +411,61 @@ sketch = function(p){
 	};
 };
 
+function moveCursor(target, direction){
+	switch(direction){
+		case "up":
+			if(b.selectedIndices[target].y > 0){
+				b.selectedIndices[target].y--;
+			}
+			break;
+		case "down":
+			if(b.selectedIndices[target].y < b.ySquares-1){
+				b.selectedIndices[target].y++;
+			}
+			break;
+		case "left":
+			if(b.selectedIndices[target].x > 0){
+				b.selectedIndices[target].x--;
+			}
+			break;
+		case "right":
+			if(b.selectedIndices[target].x < b.xSquares-1){
+				b.selectedIndices[target].x++;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+function placeAtCursor(target, state){
+	return b.selectedSquare[target].place(state);
+}
+
+function removeAtCursor(target){
+	return b.selectedSquare[target].remove();
+}
+
 $(document).ready(function() {
-	socket = io("http://localhost:3001");
-
-	// socket.emit("my event", "hello world");
-
 	new p5(sketch);
+
+	socket = io("http://localhost:3001/board");
+
+	socket.on("move", function(data){
+		moveCursor(data.target, data.direction);
+	});
+
+	socket.on("place", function(data){
+		if(!placeAtCursor(data.target, data.state)){
+			// Invalid placement
+			socket.emit("invalid placement", data);
+		}
+	});
+
+	socket.on("remove", function(data){
+		if(!removeAtCursor(data.target)){
+			// Invalid remove location
+			socket.emit("invalid remove location", data);
+		}
+	});
 });
