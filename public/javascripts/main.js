@@ -1,6 +1,7 @@
 var socket, sketch;
 var b; // Board
 var squares = []; // Individual squares (2D array)
+var currentPlayer = "p1";
 
 sketch = function(p){
 	var canvas;
@@ -83,7 +84,11 @@ sketch = function(p){
 		this.graphic.pop();
 
 		if(this.selected){
-			this.graphic.stroke("#f00");
+			if(currentPlayer == "p1"){
+				this.graphic.stroke("#f00");
+			}else if(currentPlayer == "p2"){
+				this.graphic.stroke("#00f");
+			}
 			this.graphic.noFill();
 			this.graphic.strokeWeight(4);
 			this.graphic.rectMode(p.CORNER);
@@ -108,6 +113,10 @@ sketch = function(p){
 			p1:{
 				x: 0,
 				y: 0
+			},
+			p2:{
+				x:0,
+				y:0
 			}
 		};
 
@@ -133,7 +142,8 @@ sketch = function(p){
 		}
 
 		this.selectedSquare = {
-			p1: this.squares[this.selectedIndices.p1.x][this.selectedIndices.p1.y]
+			p1: this.squares[this.selectedIndices.p1.x][this.selectedIndices.p1.y],
+			p2: this.squares[this.selectedIndices.p2.x][this.selectedIndices.p2.y]
 		};
 
 		window.addEventListener("place", (e) => {
@@ -317,9 +327,9 @@ sketch = function(p){
 		}
 
 		this.selectedSquare.p1 = this.squares[this.selectedIndices.p1.x][this.selectedIndices.p1.y];
-		// this.selectedSquare.p2 = this.squares[this.selectedIndices.p2.x][this.selectedIndices.p2.y];
+		this.selectedSquare.p2 = this.squares[this.selectedIndices.p2.x][this.selectedIndices.p2.y];
 		this.selectedSquare.p1.selected = true;
-		// this.selectedSquare.p2.selected = true;
+		this.selectedSquare.p2.selected = true;
 	};
 
 	Board.prototype.draw = function(){
