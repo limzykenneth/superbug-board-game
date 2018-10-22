@@ -1,7 +1,8 @@
 var socket, sketch;
 var b; // Board
 var squares = []; // Individual squares (2D array)
-var currentPlayer = "p1";
+var currentPlayer = "";
+var playersReady = false;
 
 sketch = function(p){
 	var canvas;
@@ -12,6 +13,7 @@ sketch = function(p){
 		this.yIndex = yIndex;
 		this.squareSize = squareSize;
 		this.selected = false;
+		this.selectedBy = "";
 		this.state = "empty"; // Can be "empty", "white" or "black"
 		this.graphic = p.createGraphics(this.squareSize, this.squareSize);
 	};
@@ -84,13 +86,15 @@ sketch = function(p){
 		this.graphic.pop();
 
 		if(this.selected){
-			if(currentPlayer == "p1"){
-				this.graphic.stroke("#f00");
-			}else if(currentPlayer == "p2"){
-				this.graphic.stroke("#00f");
+			if(this.selectedBy == "p1"){
+				this.graphic.stroke(p.color(255, 0, 0, 120));
+			}else if(this.selectedBy == "p2"){
+				this.graphic.stroke(p.color(0, 0, 255, 120));
+			}else{
+				this.graphic.noStroke();
 			}
 			this.graphic.noFill();
-			this.graphic.strokeWeight(4);
+			this.graphic.strokeWeight(6);
 			this.graphic.rectMode(p.CORNER);
 			this.graphic.rect(0, 0, this.graphic.width-1, this.graphic.height-1);
 		}
@@ -320,14 +324,19 @@ sketch = function(p){
 	};
 
 	Board.prototype.update = function(){
+		// Reset all selected state
 		for(let j=0; j<this.squares.length; j++){
 			for(let i=0; i<this.squares[j].length; i++){
 				this.squares[j][i].selected = false;
+				this.squares[j][i].selectedBy = "";
 			}
 		}
 
+		// Update selected instance
 		this.selectedSquare.p1 = this.squares[this.selectedIndices.p1.x][this.selectedIndices.p1.y];
 		this.selectedSquare.p2 = this.squares[this.selectedIndices.p2.x][this.selectedIndices.p2.y];
+		this.selectedSquare.p1.selectedBy = "p1";
+		this.selectedSquare.p2.selectedBy = "p2";
 		this.selectedSquare.p1.selected = true;
 		this.selectedSquare.p2.selected = true;
 	};
@@ -449,33 +458,70 @@ function moveCursor(target, direction){
 }
 
 function placeAtCursor(target, state){
-	return b.selectedSquare[target].place(state);
+	if(currentPlayer === target){
+		return b.selectedSquare[target].place(state);
+	}else{
+		return false;
+	}
 }
 
 function removeAtCursor(target){
-	return b.selectedSquare[target].remove();
+	if(currentPlayer === target){
+		return b.selectedSquare[target].remove();
+	}else{
+		return false;
+	}
 }
 
 $(document).ready(function() {
+	$("#page-content #message").text("Waiting for players...");
+
 	new p5(sketch);
 
 	socket = io("http://localhost:3001/board");
+	socket.on("players ready", function(player){
+		playersReady = true;
+		setCurrentPlayer(player);
 
-	socket.on("move", function(data){
-		moveCursor(data.target, data.direction);
+		socket.on("message", function(msg){
+			$("#page-content #message").text(msg);
+		});
+
+		socket.on("move", function(data){
+			moveCursor(data.target, data.direction);
+		});
+
+		socket.on("place", function(data){
+			if(!placeAtCursor(data.target, data.state)){
+				// Invalid placement
+				socket.emit("invalid placement", data);
+			}
+		});
+
+		socket.on("remove", function(data){
+			if(!removeAtCursor(data.target)){
+				// Invalid remove location
+				socket.emit("invalid remove location", data);
+			}
+		});
 	});
 
-	socket.on("place", function(data){
-		if(!placeAtCursor(data.target, data.state)){
-			// Invalid placement
-			socket.emit("invalid placement", data);
-		}
+	socket.on("player disconnected", function(player){
+		playersReady = false;
+
+		socket.removeListener("message");
+		socket.removeListener("move");
+		socket.removeListener("place");
+		socket.removeListener("remove");
+
+		currentPlayer = "";
+		b.selectedSquare[player.target].selected = false;
+		b.selectedSquare[player.target].selectedBy = "";
 	});
 
-	socket.on("remove", function(data){
-		if(!removeAtCursor(data.target)){
-			// Invalid remove location
-			socket.emit("invalid remove location", data);
-		}
-	});
+	function setCurrentPlayer(player){
+		currentPlayer = player;
+		b.selectedSquare[player].selected = true;
+		b.selectedSquare[player].selectedBy = player;
+	}
 });

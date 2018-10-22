@@ -37,32 +37,30 @@ module.exports = function(io){
 		.on("connection", function(socket){
 			console.log("Client connected");
 
-			client.clients(function(err, clients){
-				if(err) throw err;
+			if(connectedClients.p1 === ""){
+				connectedClients.p1 = socket.id;
+				socket.emit("assignment", {
+					player: "p1"
+				});
+			}else if(connectedClients.p2 === ""){
+				connectedClients.p2 = socket.id;
+				socket.emit("assignment", {
+					player: "p2"
+				});
 
-				if(clients.length >= 2){
-					// Queue the newly connected client
-					queuedClients.push(socket.id);
-					socket.emit("queue", {
-						msg: "Please wait for your turn"
-					});
-				}else{
-					// Assign player role to connected client
-					if(connectedClients.p1 === ""){
-						connectedClients.p1 = socket.id;
-						socket.emit("assignment", {
-							player: "p1"
-						});
-					}else if(connectedClients.p2 === ""){
-						connectedClients.p2 = socket.id;
-						socket.emit("assignment", {
-							player: "p2"
-						});
+				board.emit("players ready", "p1");
+				board.emit("message", "Bacteria's turn");
 
-						socket.emit("players assigned");
-					}
-				}
-			});
+				client.connected[connectedClients.p1].emit("turn", {
+					actionsLeft: 1,
+					state: "place"
+				});
+			}else{
+				queuedClients.push(socket.id);
+				socket.emit("queue", {
+					msg: "Please wait for your turn"
+				});
+			}
 
 			socket.on("disconnect", function(){
 				// Check if user is one of queued clients
@@ -72,15 +70,17 @@ module.exports = function(io){
 					});
 				}else if(connectedClients.p1 === socket.id){
 					connectedClients.p1 = "";
-					socket.emit("player disconnected", {
+					board.emit("player disconnected", {
 						target: "p1"
 					});
 				}else if(connectedClients.p2 === socket.id){
 					connectedClients.p2 = "";
-					socket.emit("player disconnected", {
+					board.emit("player disconnected", {
 						target: "p2"
 					});
 				}
+
+				console.log("Client disconnected:", socket.id);
 			});
 
 			socket.on("move", function(data){

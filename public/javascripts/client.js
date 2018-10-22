@@ -15,9 +15,10 @@ $(document).ready(function(){
 			playerState = "black";
 		}
 
-		// Temporary -----------
-		actionsLeft = 1;
-		actionState = "place";
+		socket.on("turn", function(data){
+			actionsLeft = data.actionsLeft;
+			actionState = data.state;
+		});
 
 		var $controls = $("#page-content #controls-container");
 		var $moveBtns = $controls.find("#move-container .move-btn");
