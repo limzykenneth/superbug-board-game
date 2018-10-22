@@ -527,7 +527,6 @@ $(document).ready(function() {
 
 	function setCurrentPlayer(player){
 		currentPlayer = player;
-		console.log(b.selectedSquare, player);
 		b.selectedSquare[player].selected = true;
 		b.selectedSquare[player].selectedBy = player;
 	}

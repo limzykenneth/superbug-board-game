@@ -1,4 +1,4 @@
-<section id="page-content">
+<section id="page-content" class="client">
 	<div id="controls-container">
 		<div id="move-container">
 			<button id="up-btn" class="move-btn">Up</button>
@@ -6,10 +6,27 @@
 			<button id="left-btn" class="move-btn">Left</button>
 			<button id="right-btn" class="move-btn">Right</button>
 		</div>
+
 		<div id="action-container">
 			<button id="action-btn" disabled="true">Place</button>
 		</div>
 	</div>
+	<div id="message-container">
+		<div id="turn-info"></div>
+		<div id="player-hand"></div>
+	</div>
 </section>
+
+<script type="text/template" id="card-template">
+	<div class="player-card" data-card-index="<%= index %>">
+		<%
+			_.each(actions, function(el, i){
+		%>
+				<span class="player-action"><%= el %></span>
+		<%
+			});
+		%>
+</div>
+</script>
 
 <script type="text/javascript" src="/javascripts/client.js"></script>
