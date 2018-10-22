@@ -38,12 +38,19 @@ $(document).ready(function(){
 
 		// Bind card event
 		$("body").on("click", "#page-content #message-container #player-hand .player-card", function(){
-			var cardPlayed;
-			actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
-			// Remove card from hand
-			cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1);
-			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
-			changeTurnPhase("control");
+			if(turnPhase == "card"){
+				var cardPlayed;
+				actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
+				// Remove card from hand
+				cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1);
+				$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+				if(actionStates[0] == "place"){
+					$actionBtn.text("Place");
+				}else if(actionStates[0] == "remove"){
+					$actionBtn.text("Remove");
+				}
+				changeTurnPhase("control");
+			}
 		});
 
 
@@ -94,6 +101,11 @@ $(document).ready(function(){
 				});
 			}
 			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+			if(actionStates[0] == "place"){
+				$actionBtn.text("Place");
+			}else if(actionStates[0] == "remove"){
+				$actionBtn.text("Remove");
+			}
 
 			if(actionStates.length === 0){
 				socket.emit("turn finished", {
