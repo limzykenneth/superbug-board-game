@@ -50,11 +50,7 @@ module.exports = function(io){
 
 				board.emit("players ready", "p1");
 				board.emit("message", "Bacteria's turn");
-
-				client.connected[connectedClients.p1].emit("turn", {
-					actionsLeft: 1,
-					state: "place"
-				});
+				client.connected[connectedClients.p1].emit("turn begin");
 			}else{
 				queuedClients.push(socket.id);
 				socket.emit("queue", {
@@ -101,6 +97,18 @@ module.exports = function(io){
 				board.emit("remove", {
 					target: data.target
 				});
+			});
+
+			socket.on("turn finished", function(data){
+				if(data.target == "p1"){
+					board.emit("message", "Human's turn");
+					board.emit("turn", "p2");
+					client.connected[connectedClients.p2].emit("turn begin");
+				}else if(data.target == "p2"){
+					board.emit("message", "Bacteria's turn");
+					board.emit("turn", "p1");
+					client.connected[connectedClients.p1].emit("turn begin");
+				}
 			});
 		});
 

@@ -455,6 +455,8 @@ function moveCursor(target, direction){
 		default:
 			break;
 	}
+
+	b.update();
 }
 
 function placeAtCursor(target, state){
@@ -485,6 +487,10 @@ $(document).ready(function() {
 
 		socket.on("message", function(msg){
 			$("#page-content #message").text(msg);
+		});
+
+		socket.on("turn", function(data){
+			setCurrentPlayer(data);
 		});
 
 		socket.on("move", function(data){
@@ -521,6 +527,7 @@ $(document).ready(function() {
 
 	function setCurrentPlayer(player){
 		currentPlayer = player;
+		console.log(b.selectedSquare, player);
 		b.selectedSquare[player].selected = true;
 		b.selectedSquare[player].selectedBy = player;
 	}
