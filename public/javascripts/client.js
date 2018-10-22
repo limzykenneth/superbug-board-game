@@ -6,6 +6,7 @@ var deckOfCards = [["place"], ["remove"], ["place", "place"], ["remove", "remove
 var playerHand = [];
 var playerHandHTML = "";
 var cardTemplate;
+var turnPhase = "wait"; // wait, card, control
 
 $(document).ready(function(){
 	cardTemplate = _.template($("#card-template").html());
@@ -32,14 +33,14 @@ $(document).ready(function(){
 		}
 		// Initial hand
 		playerHand = deckOfCards.splice(0, 3);
-		// playerHand = [["place", "place"], ["place"], ["place", "remove"]];
 		renderHand();
+		changeTurnPhase("idle");
 
 		// Bind card event
 		$("body").on("click", "#page-content #message-container #player-hand .player-card", function(){
 			actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
-			$actionBtn.prop("disabled", false);
 			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+			changeTurnPhase("control");
 		});
 
 
@@ -48,6 +49,7 @@ $(document).ready(function(){
 			// Draw card
 			drawCard();
 			renderHand();
+			changeTurnPhase("card");
 		});
 
 		$moveBtns.filter("#up-btn").click(function() {
@@ -90,11 +92,10 @@ $(document).ready(function(){
 			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
 
 			if(actionStates.length === 0){
-				$actionBtn.prop("disabled", true);
-				$turnInfo.text("Other player's turn, please wait");
 				socket.emit("turn finished", {
 					target: player
 				});
+				changeTurnPhase("idle");
 			}
 		});
 	});
@@ -112,5 +113,23 @@ $(document).ready(function(){
 			});
 		});
 		$playerHand.html(playerHandHTML);
+	}
+
+	function changeTurnPhase(phase){
+		turnPhase = phase;
+		if(turnPhase == "idle"){
+			$actionBtn.prop("disabled", true);
+			$controls.hide();
+			$playerHand.show();
+			$turnInfo.text("Waiting for other player");
+		}else if(turnPhase == "card"){
+			$controls.hide();
+			$playerHand.show();
+			$turnInfo.text("It's your turn, pick a card");
+		}else if(turnPhase == "control"){
+			$actionBtn.prop("disabled", false);
+			$controls.show();
+			$playerHand.hide();
+		}
 	}
 });
