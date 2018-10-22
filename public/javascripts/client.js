@@ -2,7 +2,7 @@ var socket;
 var player;
 var actionStates = [];
 var playerState = "";
-var deckOfCards = [["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"]];
+var deckOfCards = [["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"], ["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"], ["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"]];
 var playerHand = [];
 var playerHandHTML = "";
 var cardTemplate;
@@ -38,7 +38,10 @@ $(document).ready(function(){
 
 		// Bind card event
 		$("body").on("click", "#page-content #message-container #player-hand .player-card", function(){
+			var cardPlayed;
 			actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
+			// Remove card from hand
+			cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1);
 			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
 			changeTurnPhase("control");
 		});
@@ -78,6 +81,7 @@ $(document).ready(function(){
 		});
 
 		$actionBtn.click(function() {
+			console.log(JSON.stringify(actionStates));
 			var actionState = actionStates.shift();
 			if(actionState === "place"){
 				socket.emit("place", {
@@ -101,7 +105,8 @@ $(document).ready(function(){
 	});
 
 	function drawCard(){
-		playerHand.push(deckOfCards.splice(0, 1));
+		var newCard = deckOfCards.splice(0, 1);
+		playerHand = playerHand.concat(newCard);
 	}
 
 	function renderHand(){
@@ -125,11 +130,13 @@ $(document).ready(function(){
 		}else if(turnPhase == "card"){
 			$controls.hide();
 			$playerHand.show();
+			renderHand();
 			$turnInfo.text("It's your turn, pick a card");
 		}else if(turnPhase == "control"){
 			$actionBtn.prop("disabled", false);
 			$controls.show();
 			$playerHand.hide();
+			renderHand();
 		}
 	}
 });
