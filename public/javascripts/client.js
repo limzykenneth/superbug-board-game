@@ -7,6 +7,7 @@ var playerHand = [];
 var playerHandHTML = "";
 var cardTemplate;
 var turnPhase = "wait"; // wait, card, control
+var actionAckPromise;
 
 $(document).ready(function(){
 	cardTemplate = _.template($("#card-template").html());
@@ -62,6 +63,13 @@ $(document).ready(function(){
 			changeTurnPhase("card");
 		});
 
+		bindActionPromise();
+		// actionAckPromise = new Promise(function(resolve, reject){
+		// 	socket.on("action accepted", function(){
+		// 		resolve("accept");
+		// 	});
+		// });
+
 		$moveBtns.filter("#up-btn").click(function() {
 			socket.emit("move", {
 				target: player,
@@ -88,7 +96,6 @@ $(document).ready(function(){
 		});
 
 		$actionBtn.click(function() {
-			console.log(JSON.stringify(actionStates));
 			var actionState = actionStates.shift();
 			if(actionState === "place"){
 				socket.emit("place", {
@@ -100,19 +107,27 @@ $(document).ready(function(){
 					target: player
 				});
 			}
-			$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
-			if(actionStates[0] == "place"){
-				$actionBtn.text("Place");
-			}else if(actionStates[0] == "remove"){
-				$actionBtn.text("Remove");
-			}
 
-			if(actionStates.length === 0){
-				socket.emit("turn finished", {
-					target: player
-				});
-				changeTurnPhase("idle");
-			}
+			actionAckPromise.then(function(msg){
+				$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+				if(actionStates[0] == "place"){
+					$actionBtn.text("Place");
+				}else if(actionStates[0] == "remove"){
+					$actionBtn.text("Remove");
+				}
+
+				if(actionStates.length === 0){
+					socket.emit("turn finished", {
+						target: player
+					});
+					changeTurnPhase("idle");
+				}
+				bindActionPromise();
+			}).catch(function(err){
+				// Put the action back to the array
+				actionStates.unshift(actionState);
+				bindActionPromise();
+			});
 		});
 	});
 
@@ -150,5 +165,20 @@ $(document).ready(function(){
 			$playerHand.hide();
 			renderHand();
 		}
+	}
+
+	function bindActionPromise(){
+		socket.removeListener("action accepted");
+		socket.removeListener("action rejected");
+
+		actionAckPromise = new Promise(function(resolve, reject){
+			socket.on("action accepted", function(){
+				resolve("accept");
+			});
+
+			socket.on("action rejected", function(){
+				reject("reject");
+			});
+		});
 	}
 });

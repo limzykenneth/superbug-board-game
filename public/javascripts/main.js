@@ -501,6 +501,8 @@ $(document).ready(function() {
 			if(!placeAtCursor(data.target, data.state)){
 				// Invalid placement
 				socket.emit("invalid placement", data);
+			}else{
+				socket.emit("action accepted", data);
 			}
 		});
 
@@ -508,6 +510,8 @@ $(document).ready(function() {
 			if(!removeAtCursor(data.target)){
 				// Invalid remove location
 				socket.emit("invalid remove location", data);
+			}else{
+				socket.emit("action accepted", data);
 			}
 		});
 	});

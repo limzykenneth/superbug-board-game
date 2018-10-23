@@ -12,10 +12,16 @@ module.exports = function(io){
 
 			socket.on("invalid placement", function(data){
 				console.log("invalid placement", data.target);
+				client.connected[connectedClients[data.target]].emit("action rejected");
 			});
 
 			socket.on("invalid remove location", function(data){
 				console.log("invalid remove location", data.target);
+				client.connected[connectedClients[data.target]].emit("action rejected");
+			});
+
+			socket.on("action accepted", function(data){
+				client.connected[connectedClients[data.target]].emit("action accepted");
 			});
 
 			// Disconnected from board, pause connected clients
