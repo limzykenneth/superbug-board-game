@@ -461,7 +461,37 @@ function moveCursor(target, direction){
 
 function placeAtCursor(target, state){
 	if(currentPlayer === target){
-		return b.selectedSquare[target].place(state);
+		// Check if there are any pieces on ajacent squares
+		let x = b.selectedSquare[target].xIndex;
+		let y = b.selectedSquare[target].yIndex;
+
+		// If squares is undefined return false, else return if square state is not empty
+		let topLeft = false;
+		let top = b.squares[x][y-1] ? (b.squares[x][y-1].state !== "empty") : false;
+		let topRight = false;
+		let right = false;
+		let bottomRight = false;
+		let bottom = b.squares[x][y+1] ? (b.squares[x][y+1].state !== "empty") : false;
+		let bottomLeft = false;
+		let left = false;
+
+		if(!_.isUndefined(b.squares[x-1])){
+			topLeft = b.squares[x-1][y-1] ? (b.squares[x-1][y-1].state !== "empty") : false;
+			bottomLeft = b.squares[x-1][y+1] ? (b.squares[x-1][y+1].state !== "empty") : false;
+			left = b.squares[x-1][y] ? (b.squares[x-1][y].state !== "empty") : false;
+		}
+		if(!_.isUndefined(b.squares[x+1])){
+			topRight = b.squares[x+1][y-1] ? (b.squares[x+1][y-1].state !== "empty") : false;
+			right = b.squares[x+1][y] ? (b.squares[x+1][y].state !== "empty") : false;
+			bottomRight = b.squares[x+1][y+1] ? (b.squares[x+1][y+1].state !== "empty") : false;
+		}
+
+		// If any of them are true, you can place a piece there
+		if(topLeft || top || topRight || right || bottomRight || bottom || bottomLeft || left){
+			return b.selectedSquare[target].place(state);
+		}else{
+			return false;
+		}
 	}else{
 		return false;
 	}
