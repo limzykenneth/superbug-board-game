@@ -63,12 +63,12 @@ $(document).ready(function(){
 			changeTurnPhase("card");
 		});
 
+		socket.on("opponent disconnected", function(){
+			changeTurnPhase("idle");
+			$turnInfo.text("Your opponent has left the game");
+		});
+
 		bindActionPromise();
-		// actionAckPromise = new Promise(function(resolve, reject){
-		// 	socket.on("action accepted", function(){
-		// 		resolve("accept");
-		// 	});
-		// });
 
 		$moveBtns.filter("#up-btn").click(function() {
 			socket.emit("move", {

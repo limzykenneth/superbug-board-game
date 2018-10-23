@@ -1,14 +1,13 @@
-var socket, sketch;
+var socket, sketch, canvas;
 var b; // Board
 var squares = []; // Individual squares (2D array)
 var currentPlayer = "";
 var playersReady = false;
+var Board, BoardSquares;
 
 sketch = function(p){
-	var canvas;
-
 	// 12x17, let's do 8x8 first
-	var BoardSquares = function(xIndex, yIndex, squareSize){
+	BoardSquares = function(xIndex, yIndex, squareSize){
 		this.xIndex = xIndex;
 		this.yIndex = yIndex;
 		this.squareSize = squareSize;
@@ -109,7 +108,7 @@ sketch = function(p){
 		p.pop();
 	};
 
-	var Board = function(xSquares, ySquares, canvas){
+	Board = function(xSquares, ySquares, canvas){
 		this.xSquares = xSquares;
 		this.ySquares = ySquares;
 		this.squares = [];
@@ -554,9 +553,13 @@ $(document).ready(function() {
 		socket.removeListener("place");
 		socket.removeListener("remove");
 
+		// Reset the board
 		currentPlayer = "";
-		b.selectedSquare[player.target].selected = false;
-		b.selectedSquare[player.target].selectedBy = "";
+		b = new Board(8, 8, canvas);
+		b.squares[3][3].state = "black";
+		b.squares[3][4].state = "white";
+		b.squares[4][4].state = "black";
+		b.squares[4][3].state = "white";
 	});
 
 	function setCurrentPlayer(player){

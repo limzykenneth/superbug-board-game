@@ -66,20 +66,32 @@ module.exports = function(io){
 
 			socket.on("disconnect", function(){
 				// Check if user is one of queued clients
+				// if so nothing needs to be done but remove from queue list
 				if(_.includes(queuedClients, socket.id)){
 					_.remove(queuedClients, function(el){
 						return el === socket.id;
 					});
+
+				// If user is currently playing, disconnect both players and
+				// reset the game
 				}else if(connectedClients.p1 === socket.id){
 					connectedClients.p1 = "";
 					board.emit("player disconnected", {
 						target: "p1"
 					});
+					if(connectedClients.p2 != ""){
+						client.connected[connectedClients.p2].emit("opponent disconnected");
+						client.connected[connectedClients.p2].disconnect(true);
+					}
 				}else if(connectedClients.p2 === socket.id){
 					connectedClients.p2 = "";
 					board.emit("player disconnected", {
 						target: "p2"
 					});
+					if(connectedClients.p1 != ""){
+						client.connected[connectedClients.p1].emit("opponent disconnected");
+						client.connected[connectedClients.p1].disconnect(true);
+					}
 				}
 
 				console.log("Client disconnected:", socket.id);
