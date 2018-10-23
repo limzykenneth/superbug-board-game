@@ -21,6 +21,10 @@ $(document).ready(function(){
 
 	socket = io("http://localhost:3001/client");
 
+	socket.on("queue", function(msg){
+		$turnInfo.text(msg);
+	});
+
 	socket.on("assignment", function(data){
 		// Shuffle Deck
 		deckOfCards = _.shuffle(deckOfCards);

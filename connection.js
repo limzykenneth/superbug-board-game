@@ -43,26 +43,7 @@ module.exports = function(io){
 		.on("connection", function(socket){
 			console.log("Client connected");
 
-			if(connectedClients.p1 === ""){
-				connectedClients.p1 = socket.id;
-				socket.emit("assignment", {
-					player: "p1"
-				});
-			}else if(connectedClients.p2 === ""){
-				connectedClients.p2 = socket.id;
-				socket.emit("assignment", {
-					player: "p2"
-				});
-
-				board.emit("players ready", "p1");
-				board.emit("message", "Bacteria's turn");
-				client.connected[connectedClients.p1].emit("turn begin");
-			}else{
-				queuedClients.push(socket.id);
-				socket.emit("queue", {
-					msg: "Please wait for your turn"
-				});
-			}
+			queueToPlayer(socket.id);
 
 			socket.on("disconnect", function(){
 				// Check if user is one of queued clients
@@ -82,6 +63,7 @@ module.exports = function(io){
 					if(connectedClients.p2 != ""){
 						client.connected[connectedClients.p2].emit("opponent disconnected");
 						client.connected[connectedClients.p2].disconnect(true);
+						queueToPlayer();
 					}
 				}else if(connectedClients.p2 === socket.id){
 					connectedClients.p2 = "";
@@ -91,11 +73,38 @@ module.exports = function(io){
 					if(connectedClients.p1 != ""){
 						client.connected[connectedClients.p1].emit("opponent disconnected");
 						client.connected[connectedClients.p1].disconnect(true);
+						queueToPlayer();
 					}
 				}
 
 				console.log("Client disconnected:", socket.id);
 			});
+
+			function queueToPlayer(newClientID){
+				if(newClientID){
+					queuedClients.push(newClientID);
+				}
+
+				if(queuedClients.length > 1 && (connectedClients.p1 === "" && connectedClients.p2 === "")){
+					connectedClients.p1 = queuedClients.shift();
+					connectedClients.p2 = queuedClients.shift();
+
+					client.connected[connectedClients.p1].emit("assignment", {
+						player: "p1"
+					});
+					client.connected[connectedClients.p2].emit("assignment", {
+						player: "p2"
+					});
+
+					board.emit("players ready", "p1");
+					board.emit("message", "Bacteria's turn");
+					client.connected[connectedClients.p1].emit("turn begin");
+				}
+
+				for(let i=0; i<queuedClients.length; i++){
+					client.connected[queuedClients[i]].emit("queue", "Please wait for your turn");
+				}
+			}
 
 			socket.on("move", function(data){
 				board.emit("move", {
