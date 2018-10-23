@@ -26,7 +26,57 @@ a {
 				}
 			}
 		}
+
+		.full-page#wait-message-container{
+			position: fixed;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			width: 100vw;
+			height: 100vh;
+			min-height: 100%;
+			background: #9999ff;
+			z-index: 10;
+			font-size: 10vh;
+
+			#wait-message-btn{
+				display: none;
+				cursor: pointer;
+			}
+
+			#player-form{
+				text-align: center;
+
+				#player-name{
+					display: block;
+					text-align: center;
+					width: 70vw;
+					margin: 20px;
+				}
+
+				#player-btn{
+					cursor: pointer;
+					display: inline-block;
+					width: 20vw;
+					height: 13vw;
+				}
+			}
+
+			#wait-instructions{
+				display: none;
+				overflow-y: scroll;
+				padding: 20px;
+				margin: 20px;
+			}
+
+			#start-btn{
+				display: none;
+				curosr: pointer;
+			}
+		}
 	}
+
 
 	#superbug-canvas{
 		display: inline-block;

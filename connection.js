@@ -37,6 +37,10 @@ module.exports = function(io){
 		p1: "",
 		p2: ""
 	};
+	var playerNames = {
+		p1: "p1",
+		p2: "p2"
+	};
 	var queuedClients = [];
 	var client = io
 		.of("/client")
@@ -105,6 +109,11 @@ module.exports = function(io){
 					client.connected[queuedClients[i]].emit("queue", "Please wait for your turn");
 				}
 			}
+
+			socket.on("player name", function(data){
+				playerNames[data.target] = data.playerName;
+				board.emit("player name", data);
+			});
 
 			socket.on("move", function(data){
 				board.emit("move", {

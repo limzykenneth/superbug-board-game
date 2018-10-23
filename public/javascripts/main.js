@@ -4,6 +4,10 @@ var squares = []; // Individual squares (2D array)
 var currentPlayer = "";
 var playersReady = false;
 var Board, BoardSquares;
+var playerNames = {
+	p1: "p1",
+	p2: "p2"
+};
 
 sketch = function(p){
 	// 12x17, let's do 8x8 first
@@ -513,6 +517,10 @@ $(document).ready(function() {
 	socket.on("players ready", function(player){
 		playersReady = true;
 		setCurrentPlayer(player);
+
+		// socket.on("player name", function(data){
+		// 	playerNames[data.target] = data.playerName;
+		// });
 
 		socket.on("message", function(msg){
 			$("#page-content #message").text(msg);

@@ -1,4 +1,24 @@
 <section id="page-content" class="client">
+	<div id="wait-message-container" class="full-page">
+		<div id="wait-message">Welcome to Superbug!</div>
+		<form id="player-form" action="#">
+			<input type="text" name="player-name" id="player-name" placeholder="Please enter your name">
+			<input type="submit" name="submit" id="player-btn" value="OK">
+		</form>
+
+		<div id="wait-instructions">
+			<p>Hello <span id="player-name">name of player</span>!</p>
+
+			<p>Your goal is to spread as much as you can in order to overcome your opponent. To do that, you just need to surround his tokens by two of yours. All the tokens in between will change to your color.</p>
+
+			<p>Be fast, be smart, spread as much as you can and help save/destroy the human race!</p>
+
+			<button id="wait-message-btn">Ready</button>
+		</div>
+
+		<button id="start-btn">Start</button>
+	</div>
+
 	<div id="controls-container">
 		<div id="move-container">
 			<button id="up-btn" class="move-btn">Up</button>
