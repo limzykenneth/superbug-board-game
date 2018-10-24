@@ -570,17 +570,28 @@ $(document).ready(function() {
 			if(white > black){
 				// White wins
 				socket.emit("result", "p1");
+				$("#page-content #message").text("Bacteria wins!");
 			}else if(black > white){
 				// Black wins
 				socket.emit("result", "p2");
+				$("#page-content #message").text("Human wins!");
 			}else{
 				// Draw
 				socket.emit("result", "draw");
+				$("#page-content #message").text("It's a draw!");
 			}
+
+			setTimeout(function(){
+				reset();
+			}, 5000);
 		});
 	});
 
 	socket.on("player disconnected", function(player){
+		reset();
+	});
+
+	function reset(){
 		playersReady = false;
 
 		socket.removeListener("message");
@@ -595,7 +606,9 @@ $(document).ready(function() {
 		b.squares[3][4].state = "white";
 		b.squares[4][4].state = "black";
 		b.squares[4][3].state = "white";
-	});
+
+		$("#page-content #message").text("Waiting for players...");
+	}
 
 	function setCurrentPlayer(player){
 		currentPlayer = player;
