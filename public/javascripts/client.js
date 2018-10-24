@@ -46,7 +46,7 @@ $(document).ready(function(){
 			$waitMessage.text("Please wait for your turn");
 
 			// Connect to socket server
-			socket = io("https://superbug.herokuapp.com:3001/client");
+			socket = io("/client");
 
 			socket.on("queue", function(msg){
 				$turnInfo.text(msg);

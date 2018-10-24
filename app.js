@@ -9,9 +9,9 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 
 var app = express();
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
-var ioConnection = require("./connection.js")(io);
+// var http = require("http").Server(app);
+// var io = require("socket.io")(http);
+// var ioConnection = require("./connection.js")(io);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -44,8 +44,8 @@ app.use(function(err, req, res, next) {
 });
 
 // Start socket.io server
-http.listen(3001, function(){
-	console.log("listening on *:3001");
-});
+// http.listen(3001, function(){
+// 	console.log("listening on *:3001");
+// });
 
 module.exports = app;
