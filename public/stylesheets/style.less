@@ -3,7 +3,7 @@
 }
 
 body {
-	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	font: 14px "Fira Sans", sans-serif;
 }
 
 a {
@@ -13,17 +13,44 @@ a {
 
 #page-content{
 	text-align: center;
+	width: 100vw;
+	height: 100vh;
+	color: white;
 
 	&.client{
+		position: relative;
+		background: url(../images/phone-background-2.png);
+		background-size: contain;
+		font-size: 7vh;
+
 		#message-container{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 10vh;
+
 			#player-hand{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
 				.player-card{
+					background: white;
+					color: black;
 					cursor: pointer;
 					display: inline-block;
 					border: 1px black solid;
-					height: 300px;
-					width: 150px;
+					height: ~"calc(100vh - 35vh)";
+					width: ~"calc((100vw - 20vw) / 4)";
+					margin: 7px;
 				}
+			}
+		}
+
+		#controls-container{
+			#action-container{
+
 			}
 		}
 
@@ -36,14 +63,9 @@ a {
 			width: 100vw;
 			height: 100vh;
 			min-height: 100%;
-			background: #9999ff;
+			background: url(../images/phone-background-2.png);
+			background-size: contain;
 			z-index: 10;
-			font-size: 10vh;
-
-			#wait-message-btn{
-				display: none;
-				cursor: pointer;
-			}
 
 			#player-form{
 				text-align: center;
@@ -51,7 +73,7 @@ a {
 				#player-name{
 					display: block;
 					text-align: center;
-					width: 70vw;
+					width: 60vw;
 					margin: 20px;
 				}
 
@@ -59,32 +81,57 @@ a {
 					cursor: pointer;
 					display: inline-block;
 					width: 20vw;
-					height: 13vw;
+					height: 10vw;
 				}
 			}
 
 			#wait-instructions{
+				text-align: left;
+				font-size: 5vh;
+				line-height: 1.5em;
+				letter-spacing: 0.5px;
 				display: none;
 				overflow-y: scroll;
 				padding: 20px;
 				margin: 20px;
+				padding-top: 0;
+				max-width: 500px;
+
+				#wait-message-btn{
+					display: none;
+					cursor: pointer;
+					padding: 10px;
+					width: 20vw;
+				}
 			}
 
 			#start-btn{
 				display: none;
 				curosr: pointer;
+				margin: 20px;
+				padding: 10px;
+				width: 20vw;
 			}
 		}
 	}
 
+	&.board{
+		background: url(../images/board-background.png);
+		background-size: cover;
 
-	#superbug-canvas{
-		display: inline-block;
+		#superbug-canvas{
+			display: inline-block;
+		}
+
+		#message{
+			position: absolute;
+			bottom: 0;
+			padding-left: 20px;
+		}
 	}
 
-	#message{
-		position: absolute;
-		bottom: 0;
-		padding-left: 20px;
+	#page-title{
+		margin: 0;
+		padding: 1em;
 	}
 }

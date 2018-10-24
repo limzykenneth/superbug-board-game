@@ -211,12 +211,12 @@ $(document).ready(function(){
 					$actionBtn.prop("disabled", true);
 					$controls.hide();
 					$playerHand.show();
-					$turnInfo.text("Waiting for other player");
+					$turnInfo.text("YOUR OPPONENT'S TURN");
 				}else if(turnPhase == "card"){
 					$controls.hide();
 					$playerHand.show();
 					renderHand();
-					$turnInfo.text("It's your turn, pick a card");
+					$turnInfo.text("YOUR TURN");
 				}else if(turnPhase == "control"){
 					$actionBtn.prop("disabled", false);
 					$controls.show();
