@@ -2,29 +2,129 @@
 	"p1": [
 		{
 			"description": "You changed the antibiotic attack site, and it cannot affect your function as a bacteria anymore.",
-			"value": "+1"
+			"value": "+2"
 		},
 		{
 			"description": "You developed the ability to pump out the antibiotic before it can harm you.",
-			"value": "+1"
+			"value": "+2"
 		},
 		{
 			"description": "Nearly all types of bacteria have become stronger and less responsive to antibiotic treatment.",
 			"value": "+1"
+		},
+		{
+			"description": "Untreated, bacterial infections can spread rapidly. At this time the course of medicine has been effective. Bad luck.",
+			"value": "-1"
+		},
+		{
+			"description": "The term 'antibiotic' originally referred to a natural compound produced by a fungus or another microorganism. You have been treated.",
+			"value": "-1"
+		},
+		{
+			"description": "You have become stronger after being treated with a different kind of drugs.",
+			"value": "+2"
+		},
+		{
+			"description": "You have acquired pieces of DNA that code for the resistance properties from other bacteria; therefore you are stronger now.",
+			"value": "+1"
+		},
+		{
+			"description": "You have thrived in an unclean environment. Happy days!",
+			"value": "+2"
+		},
+		{
+			"description": "Antibiotics insert in a food chain can cause resistance in bacteria.",
+			"value": "+1"
+		},
+		{
+			"description": "You have infected a source of drinkable water, affecting a whole village. Well done!",
+			"value": "+2"
+		},
+		{
+			"description": "A doctor prevented a wrong diagnosis. You have been killed.",
+			"value": "-2"
+		},
+		{
+			"description": "A washed apple prevented you from spreading.",
+			"value": "-1"
+		},
+		{
+			"description": "SNAPPs have successfully treated superbugs infections and could become a possible replacement for antibiotics.",
+			"value": "-1"
+		},
+		{
+			"description": "You have been subjected to restricted antibiotic policies, making it hard for your spreading. Bad days!",
+			"value": "-2"
+		},
+		{
+			"description": "Probiotics are a likely good source for fighting bacteria. You have been killed.",
+			"value": "-2"
 		}
 	],
 	"p2": [
 		{
-			"description": "",
+			"description": "Your flu infection has been treated with antibiotics. Bad luck!",
+			"value": "-1"
+		},
+		{
+			"description": "You have skipped a dose of your treatment. Bad luck!",
+			"value": "-2"
+		},
+		{
+			"description": "You have correctly discarded any leftover medicine once completed your treatment.",
+			"value": "+2"
+		},
+		{
+			"description": "Antibacterial-containing products have not been proven to prevent the spread of any infection. Think twice before using it.",
+			"value": "-1"
+		},
+		{
+			"description": "You took antibiotics to treat a viral infection.",
+			"value": "-1"
+		},
+		{
+			"description": "Mr Fleming has discovered the first antibiotic, the penicillin, in 1927.",
 			"value": "+1"
 		},
 		{
-			"description": "",
+			"description": "You have good hygiene habits. It helps prevent and spread of infections.",
+			"value": "+2"
+		},
+		{
+			"description": "Regular soap and water are enough to clean your hands and limit the spread of bacteria.",
 			"value": "+1"
 		},
 		{
-			"description": "",
+			"description": "Antibiotics insert in a food chain can cause resistance in bacteria.",
 			"value": "+1"
+		},
+		{
+			"description": "You are in good shape! Eating nutritious food, getting enough sleep and exercise, and avoiding stress all help to have an excellent immune system.",
+			"value": "+2"
+		},
+		{
+			"description": "You took someone else's antibiotics. It has no effects on your infection, and it can cause harmful side effects.",
+			"value": "-2"
+		},
+		{
+			"description": "A common misconception is that a person's body becomes resistant to specific drugs. You need to check your facts.",
+			"value": "-1"
+		},
+		{
+			"description": "You have covered the broken skin with a clean bandage to prevent bacteria from spreading. Well done.",
+			"value": "+2"
+		},
+		{
+			"description": "You have heated your food at the right temperature before eating, +70C degrees kills dormant bacteria.",
+			"value": "+1"
+		},
+		{
+			"description": "While travelling, you have eaten from a street food stool. Bad hygiene practices can lead to bacterial infection.",
+			"value": "-2"
+		},
+		{
+			"description": "After feeling better, you have not stopped your treatment. Well done!",
+			"value": "+2"
 		}
 	]
 }

@@ -27,10 +27,10 @@ $(document).ready(function(){
 	// cardTemplateBig = _.template($("#card-template-big").html());
 	cardTemplateBig = {
 		"+1": _.template($("#card-template-big-p1").html()),
-		// "-1": _.template($("#card-template-big-1").html()),
-		// "+2": _.template($("#card-template-big+2").html()),
-		// "-2": _.template($("#card-template-big-2").html()),
-		// "+1-1": _.template($("#card-template-big+1-1").html()),
+		"-1": _.template($("#card-template-big-m1").html()),
+		"+2": _.template($("#card-template-big-p2").html()),
+		"-2": _.template($("#card-template-big-m2").html()),
+		"+1-1": _.template($("#card-template-big-p1m1").html()),
 	};
 
 	var $controls = $("#page-content #controls-container");
@@ -69,12 +69,12 @@ $(document).ready(function(){
 		this.description = description;
 		this.index = index;
 		this.smallUrl = `./images/small${value}.svg`;
-		this.small = cardTemplateSmall({
-			smallUrl: this.smallUrl,
-			actions: this.actions,
-			description: this.description,
-			index: this.index
-		});
+		// this.small = cardTemplateSmall({
+		// 	smallUrl: this.smallUrl,
+		// 	actions: this.actions,
+		// 	description: this.description,
+		// 	index: this.index
+		// });
 		this.big = cardTemplateBig[this.value]({
 			description: this.description,
 			index: this.index
@@ -109,14 +109,6 @@ $(document).ready(function(){
 			});
 
 			socket.on("assignment", function(data){
-				// Press Start
-				$waitStartBtn.show();
-				$waitMessage.text("Press start to begin!");
-				$waitStartBtn.click(function(){
-					// Hide container when ready play
-					$waitContainer.hide();
-				});
-
 				// Initialize states
 				player = data.player;
 				if(player === "p1"){
@@ -124,6 +116,16 @@ $(document).ready(function(){
 				}else if(player === "p2"){
 					playerState = "black";
 				}
+
+				// Press Start
+				$waitStartBtn.show();
+				var msg = "Press start to begin!<br>You will play as the ";
+				msg += (player == "p1") ? "bacteria. (Pink pieces)" : "human. (White pieces)";
+				$waitMessage.html(msg);
+				$waitStartBtn.click(function(){
+					// Hide container when ready play
+					$waitContainer.hide();
+				});
 
 				deckOfCards = [];
 				_.each(cardsData[player], function(el, i){
@@ -144,7 +146,6 @@ $(document).ready(function(){
 						actionStates = playerHand[parseInt($(this).attr("data-card-index"))].actions;
 						// Remove card from hand
 						cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1)[0];
-
 
 						$turnInfo.hide();
 						if(actionStates[0] == "place"){
@@ -261,7 +262,10 @@ $(document).ready(function(){
 			function renderHand(){
 				playerHandHTML = "";
 				_.each(playerHand, function(el, i){
-					playerHandHTML += el.small;
+					playerHandHTML += cardTemplateSmall({
+						smallUrl: el.smallUrl,
+						index: i
+					});
 				});
 				$playerHand.html(playerHandHTML);
 			}
