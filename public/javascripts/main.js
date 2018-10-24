@@ -8,6 +8,7 @@ var playerNames = {
 	p1: "p1",
 	p2: "p2"
 };
+var cardsLeft = 30;
 
 sketch = function(p){
 	// 12x17, let's do 8x8 first
@@ -71,18 +72,19 @@ sketch = function(p){
 		this.graphic.push();
 		this.graphic.translate(this.graphic.width/2, this.graphic.height/2);
 		this.graphic.strokeWeight(1);
+		this.graphic.stroke(255);
 		switch(this.state){
 			case "empty":
 				this.graphic.noStroke();
 				this.graphic.noFill();
 				break;
 			case "white":
-				this.graphic.stroke("#000");
-				this.graphic.fill("#fff");
+				this.graphic.noStroke();
+				this.graphic.fill("#e9428e");
 				break;
 			case "black":
-				this.graphic.stroke("#000");
-				this.graphic.fill("#000");
+				this.graphic.noStroke();
+				this.graphic.fill("#fff");
 				break;
 		}
 		this.graphic.ellipse(0, 0, this.graphic.width - 10);
@@ -90,9 +92,9 @@ sketch = function(p){
 
 		if(this.selected){
 			if(this.selectedBy == "p1"){
-				this.graphic.stroke(p.color(255, 0, 0, 120));
+				this.graphic.stroke(p.color("#e9428e"));
 			}else if(this.selectedBy == "p2"){
-				this.graphic.stroke(p.color(0, 0, 255, 120));
+				this.graphic.stroke(p.color("#ffffff"));
 			}else{
 				this.graphic.noStroke();
 			}
@@ -348,6 +350,8 @@ sketch = function(p){
 		p.push();
 		p.translate(p.width/2, p.height/2);
 		p.strokeWeight(2);
+		p.stroke(255);
+		p.fill(0);
 		// Board frame
 		p.rectMode(p.CENTER);
 		p.rect(0, 0, this.width, this.height);
@@ -378,7 +382,7 @@ sketch = function(p){
 	};
 
 	p.setup = function(){
-		canvas = p.createCanvas(p.windowHeight - 100, p.windowHeight - 100);
+		canvas = p.createCanvas(330, 330);
 		canvas.parent("#superbug-canvas");
 
 		b = new Board(8, 8, canvas);
@@ -389,7 +393,7 @@ sketch = function(p){
 	};
 
 	p.draw = function(){
-		p.background(200, 200, 200);
+		p.background(0);
 		b.update();
 		b.draw();
 	};
@@ -509,6 +513,7 @@ function removeAtCursor(target){
 }
 
 $(document).ready(function() {
+	$("#page-content #title").text("SUPERBUG");
 	$("#page-content #message").text("Waiting for players...");
 
 	new p5(sketch);
@@ -523,11 +528,14 @@ $(document).ready(function() {
 		// });
 
 		socket.on("message", function(msg){
-			$("#page-content #message").text(msg);
+			$("#page-content #title").text(msg);
+			$("#page-content #message").text(`Cards left: ${cardsLeft}`);
 		});
 
 		socket.on("turn", function(data){
 			setCurrentPlayer(data);
+			cardsLeft--;
+			$("#page-content #message").text(`Cards left: ${cardsLeft}`);
 		});
 
 		socket.on("move", function(data){
@@ -570,15 +578,18 @@ $(document).ready(function() {
 			if(white > black){
 				// White wins
 				socket.emit("result", "p1");
-				$("#page-content #message").text("Bacteria wins!");
+				$("#page-content #title").text("Bacteria wins!");
+				$("#page-content #message").text(`Cards left: ${cardsLeft}`);
 			}else if(black > white){
 				// Black wins
 				socket.emit("result", "p2");
-				$("#page-content #message").text("Human wins!");
+				$("#page-content #title").text("Human wins!");
+				$("#page-content #message").text(`Cards left: ${cardsLeft}`);
 			}else{
 				// Draw
 				socket.emit("result", "draw");
-				$("#page-content #message").text("It's a draw!");
+				$("#page-content #title").text("It's a draw!");
+				$("#page-content #message").text(`Cards left: ${cardsLeft}`);
 			}
 
 			setTimeout(function(){
@@ -607,6 +618,7 @@ $(document).ready(function() {
 		b.squares[4][4].state = "black";
 		b.squares[4][3].state = "white";
 
+		$("#page-content #title").text("SUPERBUG");
 		$("#page-content #message").text("Waiting for players...");
 	}
 
