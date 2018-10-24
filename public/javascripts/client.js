@@ -3,20 +3,40 @@ var player;
 var actionStates = [];
 var playerState = "";
 var playerName = "";
-var deckOfCards = [["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"], ["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"], ["place"], ["remove"], ["place", "place"], ["remove", "remove"], ["place", "remove"]];
 var playerHand = [];
+var cardPlayed;
 var playerHandHTML = "";
-var cardTemplate;
+var cardTemplateSmall;
+var cardTemplateBig = {};
 var turnPhase = "wait"; // wait, card, control
 var actionAckPromise;
+var cardsData = {};
+
+$.holdReady(true);
+
+fetch("./javascripts/cards.json").then(function(res) {
+	return res.json();
+}).then(function(data){
+	cardsData = data;
+	$.holdReady(false);
+});
 
 $(document).ready(function(){
 	// Initialize variables
-	cardTemplate = _.template($("#card-template").html());
+	cardTemplateSmall = _.template($("#card-template-small").html());
+	// cardTemplateBig = _.template($("#card-template-big").html());
+	cardTemplateBig = {
+		"+1": _.template($("#card-template-big-p1").html()),
+		// "-1": _.template($("#card-template-big-1").html()),
+		// "+2": _.template($("#card-template-big+2").html()),
+		// "-2": _.template($("#card-template-big-2").html()),
+		// "+1-1": _.template($("#card-template-big+1-1").html()),
+	};
 
 	var $controls = $("#page-content #controls-container");
 	var $moveBtns = $controls.find("#move-container .move-btn");
 	var $actionBtn = $controls.find("#action-container #action-btn");
+	var $fullCard = $controls.find("#card-container #card");
 	var $messages = $("#page-content #message-container");
 	var $turnInfo = $messages.find("#turn-info");
 	var $playerHand = $messages.find("#player-hand");
@@ -26,6 +46,42 @@ $(document).ready(function(){
 	var $waitBtn = $waitContainer.find("#wait-message-btn");
 	var $waitInstructions = $waitContainer.find("#wait-instructions");
 	var $waitStartBtn = $waitContainer.find("#start-btn");
+
+	var Card = function(value, description, index){
+		this.value = value;
+		switch(value){
+			case "+1":
+				this.actions = ["place"];
+				break;
+			case "-1":
+				this.actions = ["remove"];
+				break;
+			case "+2":
+				this.actions = ["place", "place"];
+				break;
+			case "-2":
+				this.actions = ["remove", "remove"];
+				break;
+			case "+1-1":
+				this.actions = ["place", "remove"];
+				break;
+		}
+		this.description = description;
+		this.index = index;
+		this.smallUrl = `./images/small${value}.svg`;
+		this.small = cardTemplateSmall({
+			smallUrl: this.smallUrl,
+			actions: this.actions,
+			description: this.description,
+			index: this.index
+		});
+		this.big = cardTemplateBig[this.value]({
+			description: this.description,
+			index: this.index
+		});
+	};
+
+	var deckOfCards = [];
 
 	// Welcome and onboarding
 	$waitForm.submit(function(e){
@@ -61,9 +117,6 @@ $(document).ready(function(){
 					$waitContainer.hide();
 				});
 
-				// Shuffle Deck
-				deckOfCards = _.shuffle(deckOfCards);
-
 				// Initialize states
 				player = data.player;
 				if(player === "p1"){
@@ -71,6 +124,15 @@ $(document).ready(function(){
 				}else if(player === "p2"){
 					playerState = "black";
 				}
+
+				deckOfCards = [];
+				_.each(cardsData[player], function(el, i){
+					deckOfCards.push(new Card(el.value, el.description, i));
+				});
+
+				// Shuffle Deck
+				deckOfCards = _.shuffle(deckOfCards);
+
 				// Initial hand
 				playerHand = deckOfCards.splice(0, 3);
 				renderHand();
@@ -79,11 +141,11 @@ $(document).ready(function(){
 				// Bind card event
 				$("body").on("click", "#page-content #message-container #player-hand .player-card", function(){
 					if(turnPhase == "card"){
-						var cardPlayed;
-						actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
+						actionStates = playerHand[parseInt($(this).attr("data-card-index"))].actions;
 						// Remove card from hand
-						cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1);
-						// $turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+						cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1)[0];
+
+
 						$turnInfo.hide();
 						if(actionStates[0] == "place"){
 							$actionBtn.text("Place");
@@ -199,12 +261,13 @@ $(document).ready(function(){
 			function renderHand(){
 				playerHandHTML = "";
 				_.each(playerHand, function(el, i){
-					playerHandHTML += cardTemplate({
-						actions: el,
-						index: i
-					});
+					playerHandHTML += el.small;
 				});
 				$playerHand.html(playerHandHTML);
+			}
+
+			function renderFullCard(card){
+				$fullCard.html(cardPlayed.big);
 			}
 
 			function changeTurnPhase(phase){
@@ -226,6 +289,7 @@ $(document).ready(function(){
 					$controls.show();
 					$playerHand.hide();
 					renderHand();
+					renderFullCard();
 				}
 			}
 

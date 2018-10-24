@@ -47,16 +47,6 @@
 	</div>
 </section>
 
-<script type="text/template" id="card-template">
-	<div class="player-card" data-card-index="<%= index %>">
-		<%
-			_.each(actions, function(el, i){
-		%>
-				<span class="player-action"><%= el %></span>
-		<%
-			});
-		%>
-</div>
-</script>
+{{>cardTemplates}}
 
 <script type="text/javascript" src="/javascripts/client.js"></script>

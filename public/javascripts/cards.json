@@ -1,0 +1,30 @@
+{
+	"p1": [
+		{
+			"description": "You changed the antibiotic attack site, and it cannot affect your function as a bacteria anymore.",
+			"value": "+1"
+		},
+		{
+			"description": "You developed the ability to pump out the antibiotic before it can harm you.",
+			"value": "+1"
+		},
+		{
+			"description": "Nearly all types of bacteria have become stronger and less responsive to antibiotic treatment.",
+			"value": "+1"
+		}
+	],
+	"p2": [
+		{
+			"description": "",
+			"value": "+1"
+		},
+		{
+			"description": "",
+			"value": "+1"
+		},
+		{
+			"description": "",
+			"value": "+1"
+		}
+	]
+}
