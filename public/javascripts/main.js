@@ -605,6 +605,8 @@ $(document).ready(function() {
 	function reset(){
 		playersReady = false;
 
+		socket.removeListener("end game");
+		socket.removeListener("turn");
 		socket.removeListener("message");
 		socket.removeListener("move");
 		socket.removeListener("place");
