@@ -24,6 +24,10 @@ module.exports = function(io){
 				client.connected[connectedClients[data.target]].emit("action accepted");
 			});
 
+			socket.on("result", function(result){
+				client.emit("result", result);
+			});
+
 			// Disconnected from board, pause connected clients
 			socket.on("disconnect", function(){
 				console.log("Board disconnected:", connectionID);
@@ -40,6 +44,10 @@ module.exports = function(io){
 	var playerNames = {
 		p1: "p1",
 		p2: "p2"
+	};
+	var cardsFinished = {
+		p1: false,
+		p2: false
 	};
 	var queuedClients = [];
 	var client = io
@@ -144,6 +152,15 @@ module.exports = function(io){
 					board.emit("message", "Bacteria's turn");
 					board.emit("turn", "p1");
 					client.connected[connectedClients.p1].emit("turn begin");
+				}
+			});
+
+			socket.on("cards finished", function(data){
+				cardsFinished[data.target] = true;
+
+				if(cardsFinished.p1 && cardsFinished.p2){
+					// Game ends
+					board.emit("end game");
 				}
 			});
 		});

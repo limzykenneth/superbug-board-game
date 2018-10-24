@@ -551,6 +551,33 @@ $(document).ready(function() {
 				socket.emit("action accepted", data);
 			}
 		});
+
+		socket.on("end game", function(){
+			// Tally pieces
+			var black = 0;
+			var white = 0;
+
+			for(let j=0; j<this.squares.length; j++){
+				for(let i=0; i<this.squares[j].length; i++){
+					if(this.squares[j][i].state == "white"){
+						white++;
+					}else if(this.squares[j][i].state == "black"){
+						black++;
+					}
+				}
+			}
+
+			if(white > black){
+				// White wins
+				socket.emit("result", "p1");
+			}else if(black > white){
+				// Black wins
+				socket.emit("result", "p2");
+			}else{
+				// Draw
+				socket.emit("result", "draw");
+			}
+		});
 	});
 
 	socket.on("player disconnected", function(player){

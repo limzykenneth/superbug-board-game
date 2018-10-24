@@ -108,6 +108,10 @@ $(document).ready(function(){
 					changeTurnPhase("card");
 				});
 
+				socket.on("result", function(result){
+					gameEnd(result);
+				});
+
 				socket.on("opponent disconnected", function(){
 					changeTurnPhase("idle");
 					$turnInfo.text("Your opponent has left the game");
@@ -166,6 +170,13 @@ $(document).ready(function(){
 								target: player
 							});
 							changeTurnPhase("idle");
+
+							// Exhausted all cards
+							if(playerHand.length === 0){
+								socket.emit("cards finished", {
+									target: player
+								});
+							}
 						}
 						bindActionPromise();
 					}).catch(function(err){
@@ -177,8 +188,10 @@ $(document).ready(function(){
 			});
 
 			function drawCard(){
-				var newCard = deckOfCards.splice(0, 1);
-				playerHand = playerHand.concat(newCard);
+				if(deckOfCards.length > 0){
+					var newCard = deckOfCards.splice(0, 1);
+					playerHand = playerHand.concat(newCard);
+				}
 			}
 
 			function renderHand(){
@@ -225,6 +238,23 @@ $(document).ready(function(){
 						reject("reject");
 					});
 				});
+			}
+
+			function gameEnd(result){
+				$waitContainer.show();
+				$waitStartBtn.hide();
+				$waitMessage.show();
+
+				if(player === result){
+					// Player won
+					$waitMessage.text("Congratulations! You have won!");
+				}else if(result === "draw"){
+					// It's a draw
+					$waitMessage.text("It's a draw!");
+				}else{
+					// Player lost
+					$waitMessage.text("You have lost. Try again next time!");
+				}
 			}
 		});
 	});
