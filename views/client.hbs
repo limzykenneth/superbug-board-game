@@ -20,17 +20,27 @@
 	</div>
 
 	<div id="controls-container">
-		<div id="move-container">
-			<button id="up-btn" class="move-btn">Up</button>
-			<button id="down-btn" class="move-btn">Down</button>
-			<button id="left-btn" class="move-btn">Left</button>
-			<button id="right-btn" class="move-btn">Right</button>
+		<div id="move-container" class="containers">
+			<div id="row-1" class="rows">
+				<button id="up-btn" class="move-btn"></button>
+			</div>
+			<div id="row-2" class="rows">
+				<button id="left-btn" class="move-btn"></button><span class="spacer"></span><button id="right-btn" class="move-btn"></button>
+			</div>
+			<div id="row-2" class="rows">
+				<button id="down-btn" class="move-btn"></button>
+			</div>
 		</div>
 
-		<div id="action-container">
+		<div id="card-container" class="containers">
+			<div id="card"></div>
+		</div>
+
+		<div id="action-container" class="containers">
 			<button id="action-btn" disabled="true">Place</button>
 		</div>
 	</div>
+
 	<div id="message-container">
 		<div id="turn-info">Waiting for player to join...</div>
 		<div id="player-hand"></div>

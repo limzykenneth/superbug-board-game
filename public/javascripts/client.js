@@ -83,7 +83,8 @@ $(document).ready(function(){
 						actionStates = playerHand[parseInt($(this).attr("data-card-index"))];
 						// Remove card from hand
 						cardPlayed = playerHand.splice(parseInt($(this).attr("data-card-index")), 1);
-						$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+						// $turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+						$turnInfo.hide();
 						if(actionStates[0] == "place"){
 							$actionBtn.text("Place");
 						}else if(actionStates[0] == "remove"){
@@ -158,7 +159,8 @@ $(document).ready(function(){
 					}
 
 					actionAckPromise.then(function(msg){
-						$turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+						// $turnInfo.text("It's your turn, " + actionStates[0] + " a piece");
+						$turnInfo.hide();
 						if(actionStates[0] == "place"){
 							$actionBtn.text("Place");
 						}else if(actionStates[0] == "remove"){
@@ -212,11 +214,13 @@ $(document).ready(function(){
 					$controls.hide();
 					$playerHand.show();
 					$turnInfo.text("YOUR OPPONENT'S TURN");
+					$turnInfo.show();
 				}else if(turnPhase == "card"){
 					$controls.hide();
 					$playerHand.show();
 					renderHand();
 					$turnInfo.text("YOUR TURN");
+					$turnInfo.show();
 				}else if(turnPhase == "control"){
 					$actionBtn.prop("disabled", false);
 					$controls.show();

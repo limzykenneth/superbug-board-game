@@ -49,8 +49,71 @@ a {
 		}
 
 		#controls-container{
-			#action-container{
+			display: flex;
 
+			.containers{
+				display: inline-block;
+				width: 33.3%;
+				height: 100vh;
+			}
+
+			#move-container{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+
+				.rows{
+					display: flex;
+					justify-content: center;
+
+					.move-btn{
+						width: 15vh;
+						height: 15vh;
+						background: white;
+						border: none;
+
+						&#up-btn{
+							border-top-left-radius: 50%;
+							border-top-right-radius: 50%;
+						}
+
+						&#down-btn{
+							border-bottom-left-radius: 50%;
+							border-bottom-right-radius: 50%;
+						}
+
+						&#left-btn{
+							border-top-left-radius: 50%;
+							border-bottom-left-radius: 50%;
+						}
+
+						&#right-btn{
+							border-top-right-radius: 50%;
+							border-bottom-right-radius: 50%;
+						}
+					}
+
+					.spacer{
+						display: inline-block;
+						width: 15vh;
+						height: 15vh;
+						background: white;
+					}
+				}
+			}
+
+			#action-container{
+				display: flex;
+				flex-direction: column-reverse;
+
+				#action-btn{
+					background: white;
+					text-transform: uppercase;
+					border: none;
+					margin: 20px;
+					padding: 10px;
+				}
 			}
 		}
 
