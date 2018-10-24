@@ -513,7 +513,7 @@ $(document).ready(function() {
 
 	new p5(sketch);
 
-	socket = io("http://localhost:3001/board");
+	socket = io("https://superbug.herokuapp.com:3001/board");
 	socket.on("players ready", function(player){
 		playersReady = true;
 		setCurrentPlayer(player);
