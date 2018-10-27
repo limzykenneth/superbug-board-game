@@ -69,12 +69,6 @@ $(document).ready(function(){
 		this.description = description;
 		this.index = index;
 		this.smallUrl = `./images/small${value}.svg`;
-		// this.small = cardTemplateSmall({
-		// 	smallUrl: this.smallUrl,
-		// 	actions: this.actions,
-		// 	description: this.description,
-		// 	index: this.index
-		// });
 		this.big = cardTemplateBig[this.value]({
 			description: this.description,
 			index: this.index
